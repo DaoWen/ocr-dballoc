@@ -12,47 +12,47 @@
  */
 template <typename T>
 struct OcrRelativePtr {
+    private:
+        ptrdiff_t offset;
 
-    ptrdiff_t offset;
-
-    // offset of 1 is impossible since this is larger than 1 byte
-    constexpr OcrRelativePtr(): offset(1) {}
-
-    void set(const T *other) {
-        if (other == nullptr) {
-            offset = 0;
+        void set(const T *other) {
+            if (other == nullptr) {
+                offset = 0;
+            }
+            else {
+                offset = (char*)other - (char*)this;
+            }
         }
-        else {
-            offset = (char*)other - (char*)this;
+
+        T *get() const {
+            assert(offset != 1);
+            if (offset == 0) return nullptr;
+            else {
+                char *target = (char*)this + offset;
+                return (T*)target;
+            }
         }
-    }
 
-    T *get() const {
-        assert(offset != 1);
-        if (offset == 0) return nullptr;
-        else {
-            char *target = (char*)this + offset;
-            return (T*)target;
+    public:
+        // offset of 1 is impossible since this is larger than 1 byte
+        constexpr OcrRelativePtr(): offset(1) {}
+
+        OcrRelativePtr(const T *other) { set(other); }
+
+        OcrRelativePtr<T> &operator=(const T *other) {
+            set(other);
+            return *this;
         }
-    }
 
-    OcrRelativePtr(const T *other) { set(other); }
+        T &operator*() const { return *get(); }
 
-    OcrRelativePtr<T> &operator=(const T *other) {
-        set(other);
-        return *this;
-    }
+        T *operator->() const { return get(); }
 
-    T &operator*() const { return *get(); }
+        T &operator[](const int index) const { return get()[index]; }
 
-    T *operator->() const { return get(); }
+        operator T*() const { return get(); }
 
-    T &operator[](const int index) const { return get()[index]; }
-
-    operator T*() const { return get(); }
-
-    /* TODO - implement math operators, like increment and decrement */
-
+        /* TODO - implement math operators, like increment and decrement */
 };
 
 #endif /* _OCR_RELATIVE_PTR_HPP_ */
