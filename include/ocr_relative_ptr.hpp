@@ -1,6 +1,8 @@
 #ifndef _OCR_RELATIVE_PTR_HPP_
 #define _OCR_RELATIVE_PTR_HPP_
 
+#include <cassert>
+
 /**
  * This is our "relative pointer" class.
  * You should be able to use it pretty much just like a normal pointer.
