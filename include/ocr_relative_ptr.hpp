@@ -16,7 +16,7 @@ struct OcrRelativePtr {
     ptrdiff_t offset;
 
     // offset of 1 is impossible since this is larger than 1 byte
-    OcrRelativePtr(): offset(1) {}
+    constexpr OcrRelativePtr(): offset(1) {}
 
     void set(const T *other) {
         if (other == nullptr) {
@@ -43,11 +43,11 @@ struct OcrRelativePtr {
         return *this;
     }
 
-    T &operator*() { return *get(); }
+    T &operator*() const { return *get(); }
 
-    T *operator->() { return get(); }
+    T *operator->() const { return get(); }
 
-    T &operator[](const int index) { return get()[index]; }
+    T &operator[](const int index) const { return get()[index]; }
 
     operator T*() const { return get(); }
 
