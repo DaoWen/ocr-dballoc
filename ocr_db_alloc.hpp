@@ -21,7 +21,6 @@ namespace Ocr {
     class DatablockAllocator {
         private:
             char *const m_dbBuf;
-            const size_t m_dbSize;
             ptrdiff_t *const m_offset;
 
             inline void *allocateAligned(size_t size, int alignment) const {
@@ -33,10 +32,10 @@ namespace Ocr {
 
         public:
             constexpr DatablockAllocator(void):
-                m_dbBuf(nullptr), m_dbSize(0), m_offset(nullptr) { }
+                m_dbBuf(nullptr), m_offset(nullptr) { }
 
             DatablockAllocator(void *dbPtr, size_t dbSize):
-                m_dbBuf((char*)dbPtr), m_dbSize(dbSize),
+                m_dbBuf((char*)dbPtr),
                 m_offset((ptrdiff_t*)&m_dbBuf[dbSize-sizeof(ptrdiff_t)])
             {
                 assert(dbPtr < (void*)m_offset && "Datablock is too small for allocator");
