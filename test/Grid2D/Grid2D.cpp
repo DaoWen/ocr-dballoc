@@ -4,10 +4,12 @@
 
 using namespace Ocr;
 
+#define RelPtr OcrRelativePtr
+
 class Grid2D {
     private:
-        static double **_initGrid2D(int rows, int cols) {
-            double **grid = ocrNewArray(double*, rows);
+        static RelPtr<double> *_initGrid2D(int rows, int cols) {
+            RelPtr<double> *grid = ocrNewArray(RelPtr<double>, rows);
             for (int r=0; r<rows; r++) {
                 grid[r] = ocrNewArray(double, cols);
             }
@@ -17,7 +19,7 @@ class Grid2D {
     public:
         const size_t rows;
         const size_t cols;
-        double *const *const grid;
+        const RelPtr<const RelPtr<double>> grid;
 
         Grid2D(size_t rowDim, size_t colDim):
             rows(rowDim), cols(colDim), grid(_initGrid2D(rowDim, colDim))
