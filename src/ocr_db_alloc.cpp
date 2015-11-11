@@ -16,7 +16,9 @@ namespace Ocr {
 
     void ocrAllocatorSetDb(void *dbPtr, size_t dbSize, bool needsInit) {
         new (&_localDbAllocator) DatablockAllocator(dbPtr, dbSize);
-        _localDbAllocator.init();
+        if (needsInit) {
+            _localDbAllocator.init();
+        }
     }
 
 }
