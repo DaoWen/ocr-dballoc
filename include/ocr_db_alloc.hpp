@@ -6,8 +6,8 @@
 #define ocrNew(T, ...) ocrNewIn(ocrDbArenaGet(), T, __VA_ARGS__)
 
 // NOTE: No constructors are called here! Must call explicitly if needed.
-#define ocrNewArrayIn(A, T, SZ, ...) ((T*) (A).allocate(sizeof(T), SZ))
-#define ocrNewArray(T, SZ, ...) ocrNewArrayIn(ocrAllocatorGet(), T, SZ, __VA_ARGS__)
+#define ocrNewArrayIn(A, T, SZ) ((T*) (A).allocate(sizeof(T), SZ))
+#define ocrNewArray(T, SZ) ocrNewArrayIn(ocrAllocatorGet(), T, SZ)
 
 // Currently deleting is a no-op. All memory is freed with the datablock.
 #define ocrDelete(ptr) /* NO-OP */
