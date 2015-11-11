@@ -7,18 +7,18 @@
 #endif /* __APPLE__ */
 
 namespace Ocr {
+    namespace SimpleDbAllocator {
+        static thread_local DatablockAllocator _localDbAllocator;
 
-    static thread_local DatablockAllocator _localDbAllocator;
+        const DatablockAllocator &ocrAllocatorGet(void) {
+            return _localDbAllocator;
+        }
 
-    const DatablockAllocator &ocrAllocatorGet(void) {
-        return _localDbAllocator;
-    }
-
-    void ocrAllocatorSetDb(void *dbPtr, size_t dbSize, bool needsInit) {
-        new (&_localDbAllocator) DatablockAllocator(dbPtr, dbSize);
-        if (needsInit) {
-            _localDbAllocator.init();
+        void ocrAllocatorSetDb(void *dbPtr, size_t dbSize, bool needsInit) {
+            new (&_localDbAllocator) DatablockAllocator(dbPtr, dbSize);
+            if (needsInit) {
+                _localDbAllocator.init();
+            }
         }
     }
-
 }

@@ -2,9 +2,10 @@
 #include "ocr_relative_ptr.hpp"
 #include "ocr_db_alloc.hpp"
 
-using namespace Ocr;
+using namespace Ocr::SimpleDbAllocator;
 
-#define RelPtr OcrRelativePtr
+template <typename T> using RelPtr = Ocr::OcrRelativePtr<T>;
+
 
 class Grid2D {
     private:
