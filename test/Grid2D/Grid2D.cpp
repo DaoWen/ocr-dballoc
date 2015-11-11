@@ -15,13 +15,26 @@ class Grid2D {
         }
 
     public:
-        const size_t m_rows;
-        const size_t m_cols;
-        double *const *const m_grid;
+        const size_t rows;
+        const size_t cols;
+        double *const *const grid;
 
         Grid2D(size_t rowDim, size_t colDim):
-            m_rows(rowDim), m_cols(colDim), m_grid(_initGrid2D(rowDim, colDim))
-        { }
+            rows(rowDim), cols(colDim), grid(_initGrid2D(rowDim, colDim))
+        {
+            int n = 0;
+            for (int r=0; r<rows; r++) {
+                for (int c=0; c<cols; c++) {
+                    grid[r][c] = n++ / 10.0;
+                }
+            }
+        }
+
+        inline double at(int row, int col) const {
+            assert(row >= 0 && col >= 0 && "Negative index");
+            assert(row < rows && col < cols && "Index out of bounds");
+            return grid[row][col];
+        }
 };
 
 #define ARENA_SIZE 1024
@@ -35,11 +48,11 @@ ocrGuid_t mainEdt(u32 paramc, u64* paramv, u32 depc, ocrEdtDep_t depv[]) {
     // Use arena as current allocator backing-datablock
     ocrAllocatorSetDb(arenaPtr, ARENA_SIZE, true);
     // Allocate a grid in the datablock
-    Grid2D *grid = ocrNew(Grid2D, 10,10);
+    Grid2D &grid = *ocrNew(Grid2D, 10,10);
     // Is the grid in the datablock?
-    assert((void*)grid == arenaPtr);
+    assert((void*)&grid == arenaPtr);
     // ...
-    PRINTF("Hello from mainEdt()\n");
+    PRINTF("Item at grid[5][6] = %.1f\n", grid.at(5,6));
     ocrShutdown();
     return 0;
 }
