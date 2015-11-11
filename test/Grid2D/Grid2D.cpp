@@ -1,6 +1,7 @@
 #include "ocr.h"
 #include "ocr_relative_ptr.hpp"
 #include "ocr_db_alloc.hpp"
+#include <cstring>
 
 using namespace Ocr::SimpleDbAllocator;
 
@@ -33,7 +34,7 @@ class Grid2D {
             }
         }
 
-        inline double at(int row, int col) const {
+        inline double &at(int row, int col) const {
             assert(row >= 0 && col >= 0 && "Negative index");
             assert(row < rows && col < cols && "Index out of bounds");
             return grid[row][col];
@@ -54,8 +55,22 @@ ocrGuid_t mainEdt(u32 paramc, u64* paramv, u32 depc, ocrEdtDep_t depv[]) {
     Grid2D &grid = *ocrNew(Grid2D, 10,10);
     // Is the grid in the datablock?
     assert((void*)&grid == arenaPtr);
-    // ...
-    PRINTF("Item at grid[5][6] = %.1f\n", grid.at(5,6));
+    // Read current grid
+    double *data = &grid.at(5,6);
+    PRINTF("Item at orig (5, 6) = %.1f (@ %p)\n", *data, data);
+    // Copy current grid
+    void *copyPtr;
+    ocrGuid_t copyGuid;
+    ocrDbCreate(&copyGuid, &copyPtr, ARENA_SIZE, DB_PROP_NONE, NULL_GUID, NO_ALLOC);
+    memcpy(copyPtr, arenaPtr, ARENA_SIZE);
+    Grid2D &grid2 = *(Grid2D*)copyPtr;
+    // Wipe old grid
+    memset(arenaPtr, 0, ARENA_SIZE);
+    PRINTF("Wiped original: val = %.1f (@ %p)\n", *data, data);
+    // Read new grid
+    data = &grid2.at(5,6);
+    PRINTF("Item at orig (5, 6) = %.1f (@ %p)\n", *data, data);
+    // Done
     ocrShutdown();
     return 0;
 }
