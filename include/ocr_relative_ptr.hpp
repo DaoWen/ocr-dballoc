@@ -1,6 +1,7 @@
 #ifndef _OCR_RELATIVE_PTR_HPP_
 #define _OCR_RELATIVE_PTR_HPP_
 
+#include <cstddef>
 #include <cassert>
 
 namespace Ocr {
