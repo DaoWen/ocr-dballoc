@@ -26,6 +26,8 @@ namespace Ocr {
 
             T &operator[](const size_t index) { return data[index]; }
 
+            const T &operator[](const size_t index) const { return data[index]; }
+
             void push_back(const T& value) { data[head++] = value; }
 
             size_t size(void) const { return head; }
