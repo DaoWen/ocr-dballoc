@@ -45,6 +45,10 @@ namespace Ocr {
                 return pos;
             }
 
+            void resize(size_t s) {
+                throw "RESIZE NOT SUPPORTED FOR OCR VECTORS";
+            }
+
     };
 }
 
