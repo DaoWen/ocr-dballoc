@@ -44,9 +44,10 @@ ocrGuid_t mainEdt(u32 paramc, u64* paramv, u32 depc, ocrEdtDep_t depv[]) {
     assert(v.size() == 7);
     {
         int total = 0;
-        for (auto p=v.begin(); p!=v.end(); p++) {
-            total += *p;
-            PRINTF("%d ", *p);
+        const Ocr::Vector<int> &vc = v;
+        for (int i=0; i<vc.size(); i++) {
+            total += vc[i];
+            PRINTF("%d ", vc[i]);
         }
         PRINTF("\nNew total is %d\n", total);
         assert(total == 64);
