@@ -50,6 +50,12 @@ namespace Ocr {
             }
 
     };
+
+    /** Vector defaulting to capacity of 256 */
+    template <typename T>
+    struct Vector256: public Vector<T> {
+        Vector256(): Vector<T>(256) { }
+    };
 }
 
 #endif /* _OCR_VECTOR_HPP_ */
