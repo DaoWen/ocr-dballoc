@@ -24,7 +24,7 @@ namespace Ocr {
 
             Vector(const size_t max_capacity):
                 capacity(max_capacity), head(0),
-                data(ocrNewArray(T, max_capacity)) { }
+                data(Ocr::NewArray<T>(max_capacity)) { }
 
             T &operator[](const size_t index) { return data[index]; }
 
