@@ -2,6 +2,8 @@
 #define _OCR_VECTOR_HPP_
 
 #include "ocr_db_alloc.hpp"
+#include <cstdlib>
+#include <cstdio>
 
 namespace Ocr {
     /**
@@ -14,7 +16,7 @@ namespace Ocr {
     struct Vector {
         private:
             const int capacity;
-            int head;
+            size_t head;
             T *const data;
 
         public:
@@ -45,8 +47,14 @@ namespace Ocr {
                 return pos;
             }
 
-            void resize(size_t s) {
-                throw "RESIZE NOT SUPPORTED FOR OCR VECTORS";
+            void resize(size_t size) {
+                if (size > capacity) {
+                    fprintf(stderr, "RESIZE NOT SUPPORTED FOR OCR VECTORS\n");
+                    abort();
+                }
+                else {
+                    head = size;
+                }
             }
 
     };
