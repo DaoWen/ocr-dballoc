@@ -16,7 +16,7 @@ ocrGuid_t mainEdt(u32 paramc, u64* paramv, u32 depc, ocrEdtDep_t depv[]) {
     // Use arena as current allocator backing-datablock
     ocrAllocatorSetDb(arenaPtr, ARENA_SIZE, true);
     // Allocate a vector in the datablock
-    Ocr::Vector<int> &v = *Ocr::New<Ocr::Vector<int>>(VECTOR_SIZE);
+    Ocr::Vector<int> &v = *Ocr::New<Ocr::Vector<int>>(0, VECTOR_SIZE);
     // Is the vector in the datablock?
     assert((void*)&v == arenaPtr);
     // Add some numbers to the vector
@@ -24,6 +24,7 @@ ocrGuid_t mainEdt(u32 paramc, u64* paramv, u32 depc, ocrEdtDep_t depv[]) {
         v.push_back(i*2);
     }
     // Check the size
+    PRINTF("Size = %d\n", v.size());
     assert(v.size() == 10);
     // Sum the entries
     {
