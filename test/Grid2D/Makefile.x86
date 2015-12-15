@@ -8,7 +8,7 @@ OCR_ALLOC_LIB_ROOT ?= ../..
 # DEBUG / OPTIMIZATION OPTIONS
 
 # Optimization flags
-CXXFLAGS += -std=gnu++11 -g -O2
+CXXFLAGS += -std=c++11 -g -O2
 
 # Enable AddressSanitizer checks
 #CXX_OPTS += -g -fsanitize=address -fno-omit-frame-pointer

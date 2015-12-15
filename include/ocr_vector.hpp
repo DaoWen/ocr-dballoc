@@ -54,7 +54,7 @@ namespace Ocr {
 
             void reserve(size_t size) {
                 if (size > capacity) {
-                    fprintf(stderr, "RESIZE NOT SUPPORTED FOR OCR VECTORS\n");
+                    fprintf(stderr, "Resizing past initial capacity not supported for Ocr::Vector. (%zu > %zu)\n", size, capacity);
                     abort();
                 }
             }
