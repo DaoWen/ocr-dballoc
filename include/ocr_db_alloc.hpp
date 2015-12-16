@@ -39,7 +39,7 @@ namespace Ocr {
 
                 inline void *allocateAligned(size_t size, int alignment) const {
                     assert(m_offset != nullptr && "Uninitialized allocator");
-                    ptrdiff_t start = *m_offset & (-alignment);
+                    ptrdiff_t start = (*m_offset + alignment - 1) & (-alignment);
                     *m_offset = start + size;
                     assert(&m_dbBuf[*m_offset] <= (char*)m_offset && "Datablock allocator overflow");
                     return (void*)&m_dbBuf[start];
