@@ -60,7 +60,7 @@ namespace Ocr {
     template <typename T> using RelPtr = OcrRelativePtr<T>;
 
     namespace Internal {
-        template <typename T, int N>
+        template <typename T, unsigned N>
         struct PointerNester {
             typedef RelPtr<typename PointerNester<T, N-1>::type> type;
         };
@@ -71,7 +71,7 @@ namespace Ocr {
         };
     }
 
-    template <typename T, int N> using NestedRelPtr = typename Internal::PointerNester<T,N>::type;
+    template <typename T, unsigned N> using NestedRelPtr = typename Internal::PointerNester<T,N>::type;
 
 }
 

@@ -70,7 +70,7 @@ namespace Ocr {
     };
 
     /** Vector defaulting to capacity of N */
-    template <typename T, int N>
+    template <typename T, size_t N>
     struct VectorN: public Vector<T> {
         VectorN(size_t sz = 0): Vector<T>(sz, N) { }
     };
