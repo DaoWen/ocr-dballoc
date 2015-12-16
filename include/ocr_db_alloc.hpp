@@ -4,8 +4,8 @@
 #define ocrNewIn(A, T, ...) (Ocr::NewIn<T>(A, __VA_ARGS__))
 #define ocrNew(T, ...) (Ocr::New<T>(__VA_ARGS__))
 
-#define ocrNewArrayIn(A, T, SZ) (Ocr::NewArrayIn<T>(A, __VA_ARGS__))
-#define ocrNewArray(T, SZ) (Ocr::NewArray<T>(__VA_ARGS__))
+#define ocrNewArrayIn(A, T, SZ) (Ocr::NewArrayIn<T>(A, SZ))
+#define ocrNewArray(T, SZ) (Ocr::NewArray<T>(SZ))
 
 // Currently deleting is a no-op. All memory is freed with the datablock.
 #define ocrDelete(ptr) /* NO-OP */
