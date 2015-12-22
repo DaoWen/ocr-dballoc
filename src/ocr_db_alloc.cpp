@@ -10,7 +10,7 @@ namespace Ocr {
     namespace SimpleDbAllocator {
         static thread_local DatablockAllocator _localDbAllocator;
 
-        const DatablockAllocator &ocrAllocatorGet(void) {
+        DatablockAllocator &ocrAllocatorGet(void) {
             return _localDbAllocator;
         }
 

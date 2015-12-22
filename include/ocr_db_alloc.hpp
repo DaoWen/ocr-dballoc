@@ -17,6 +17,11 @@
 
 namespace Ocr {
     namespace SimpleDbAllocator {
+
+        struct AllocatorState {
+            ptrdiff_t offset;
+        };
+
         class DatablockAllocator {
             private:
                 char *const m_dbBuf;
@@ -35,6 +40,14 @@ namespace Ocr {
 
                 void init(void) const {
                     *m_offset = 0;
+                }
+
+                AllocatorState saveState(void) {
+                    return { *m_offset };
+                }
+
+                void restoreState(AllocatorState state) {
+                    *m_offset = state.offset;
                 }
 
                 inline void *allocateAligned(size_t size, int alignment) const {
@@ -70,7 +83,7 @@ namespace Ocr {
 
         };
 
-        const DatablockAllocator &ocrAllocatorGet(void);
+        DatablockAllocator &ocrAllocatorGet(void);
         void ocrAllocatorSetDb(void *dbPtr, size_t dbSize, bool needsInit);
     }
 
