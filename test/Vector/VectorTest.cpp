@@ -13,12 +13,15 @@ ocrGuid_t mainEdt(u32 paramc, u64* paramv, u32 depc, ocrEdtDep_t depv[]) {
     void *arenaPtr;
     ocrGuid_t arenaGuid;
     ocrDbCreate(&arenaGuid, &arenaPtr, ARENA_SIZE, DB_PROP_NONE, NULL_GUID, NO_ALLOC);
+    Ocr::InitializeArena(arenaPtr, ARENA_SIZE);
     // Use arena as current allocator backing-datablock
-    ocrAllocatorSetDb(arenaPtr, ARENA_SIZE, true);
+    Ocr::SetCurrentArena(arenaPtr);
     // Allocate a vector in the datablock
     Ocr::Vector<int> &v = *Ocr::New<Ocr::Vector<int>>(0, VECTOR_SIZE);
     // Is the vector in the datablock?
-    assert((void*)&v == arenaPtr);
+    void *vecAddr = &v;
+    void *arenaEnd = (char*)arenaPtr + ARENA_SIZE;
+    assert(arenaPtr <= vecAddr && vecAddr <= arenaEnd);
     // Add some numbers to the vector
     for (int i=0; i<10; i++) {
         v.push_back(i*2);

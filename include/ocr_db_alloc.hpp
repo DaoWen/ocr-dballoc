@@ -1,16 +1,6 @@
 #ifndef _OCR_DB_ALLOC_HPP_
 #define _OCR_DB_ALLOC_HPP_
 
-#define ocrNewIn(A, T, ...) (Ocr::NewIn<T>(A, __VA_ARGS__))
-#define ocrNew(T, ...) (Ocr::New<T>(__VA_ARGS__))
-
-#define ocrNewArrayIn(A, T, SZ) (Ocr::NewArrayIn<T>(A, SZ))
-#define ocrNewArray(T, SZ) (Ocr::NewArray<T>(SZ))
-
-// Currently deleting is a no-op. All memory is freed with the datablock.
-#define ocrDelete(ptr) /* NO-OP */
-#define ocrDeleteArray(ptr) /* NO-OP */
-
 #include <cstddef>
 #include <cassert>
 #include <memory>
@@ -22,39 +12,38 @@ namespace Ocr {
             ptrdiff_t offset;
         };
 
+        struct DbArenaHeader {
+            size_t size;
+            ptrdiff_t offset;
+        };
+
         class DatablockAllocator {
             private:
                 char *const m_dbBuf;
-                ptrdiff_t *const m_offset;
+                DbArenaHeader *const m_info;
 
             public:
                 constexpr DatablockAllocator(void):
-                    m_dbBuf(nullptr), m_offset(nullptr) { }
+                    m_dbBuf(nullptr), m_info(nullptr) { }
 
-                DatablockAllocator(void *dbPtr, size_t dbSize):
-                    m_dbBuf((char*)dbPtr),
-                    m_offset((ptrdiff_t*)&m_dbBuf[dbSize-sizeof(ptrdiff_t)])
-                {
-                    assert(dbPtr < (void*)m_offset && "Datablock is too small for allocator");
-                }
-
-                void init(void) const {
-                    *m_offset = 0;
-                }
+                DatablockAllocator(void *dbPtr):
+                    m_dbBuf((char*)dbPtr), m_info((DbArenaHeader*)dbPtr) { }
 
                 AllocatorState saveState(void) {
-                    return { *m_offset };
+                    return { m_info->offset };
                 }
 
                 void restoreState(AllocatorState state) {
-                    *m_offset = state.offset;
+                    m_info->offset = state.offset;
                 }
 
                 inline void *allocateAligned(size_t size, int alignment) const {
-                    assert(m_offset != nullptr && "Uninitialized allocator");
-                    ptrdiff_t start = (*m_offset + alignment - 1) & (-alignment);
-                    *m_offset = start + size;
-                    assert(&m_dbBuf[*m_offset] <= (char*)m_offset && "Datablock allocator overflow");
+                    assert(m_info != nullptr && "Uninitialized allocator");
+                    const ptrdiff_t offset = m_info->offset;
+                    ptrdiff_t start = (offset + alignment - 1) & (-alignment);
+                    m_info->offset = start + size;
+                    assert(m_info->offset <= m_info->size
+                           && "Datablock allocator overflow");
                     return (void*)&m_dbBuf[start];
                 }
 
@@ -84,7 +73,32 @@ namespace Ocr {
         };
 
         DatablockAllocator &ocrAllocatorGet(void);
-        void ocrAllocatorSetDb(void *dbPtr, size_t dbSize, bool needsInit);
+        void ocrAllocatorSetDb(void *dbPtr);
+        void ocrAllocatorDbInit(void *dbPtr, size_t dbSize);
+    }
+
+    /////////////////////////////////////////////
+    // Arena management
+
+    using Arena = SimpleDbAllocator::DatablockAllocator;
+
+    static inline void InitializeArena(void *dbPtr, size_t dbSize) {
+        SimpleDbAllocator::ocrAllocatorDbInit(dbPtr, dbSize);
+    }
+
+    static inline void SetCurrentArena(void *dbPtr) {
+        SimpleDbAllocator::ocrAllocatorSetDb(dbPtr);
+    }
+
+    static inline Arena &GetCurrentArena(void) {
+        return SimpleDbAllocator::ocrAllocatorGet();
+    }
+
+    template <typename T>
+    static inline T &GetArenaRoot(void *dbPtr) {
+        typedef SimpleDbAllocator::DbArenaHeader HT;
+        HT *header = (HT*) dbPtr;
+        return * (T*) &header[1];
     }
 
     /////////////////////////////////////////////
